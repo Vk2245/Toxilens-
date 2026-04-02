@@ -46,9 +46,6 @@
 
 > **"Drug development fails 90% of the time. 30% of those failures are due to unexpected toxicity — discovered only after years of work and hundreds of millions spent. ToxiLens predicts it before a single experiment is run, and explains exactly why, atom by atom."**
 
-<br>
-
-[🔬 Live Demo](https://toxilens.hf.space) &nbsp;·&nbsp; [📡 API Docs](https://toxilens.hf.space/docs) &nbsp;·&nbsp; [📄 Model Card](docs/model_card.md) &nbsp;·&nbsp; [🐛 Report Bug](issues) &nbsp;·&nbsp; [💡 Request Feature](issues)
 
 </div>
 
