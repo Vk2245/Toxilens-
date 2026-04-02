@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "toxilens"
+version = "1.0.0"
+description = "Interpretable Multi-Modal AI for Drug Toxicity Prediction"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"

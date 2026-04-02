@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+conda_env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ML artifacts (large files)
+ml/data/raw/*.csv
+ml/data/raw/*.zip
+ml/data/raw/*.sdf
+ml/data/processed/*.pkl
+ml/data/processed/*.pt
+ml/data/processed/*.npy
+ml/artifacts/*.pkl
+ml/artifacts/*.pt
+ml/artifacts/*.txt
+ml/artifacts/*.json
+ml/artifacts/chemberta_finetuned/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Docker
+*.log
+
+# Exclude specific PDF files
+track a.pdf
+track a problem_cropped.pdf
+
+# Pytest cache
+.pytest_cache/
+
+# Kiro specs (optional - keep if you want to show your planning)
+# .kiro/
+

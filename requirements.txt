@@ -1,0 +1,54 @@
+# Core Backend Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-multipart>=0.0.6
+
+# ML and Scientific Computing
+torch>=2.1.0
+torch-geometric>=2.4.0
+transformers>=4.37.0
+lightgbm>=4.2.0
+scikit-learn>=1.4.0
+numpy>=1.26.0,<2.0.0
+pandas>=2.1.0
+scipy>=1.11.0
+
+# Chemistry and Molecular Processing
+rdkit>=2023.9.0
+
+# Explainability
+shap>=0.44.0
+captum>=0.7.0
+
+# Conformal Prediction
+mapie>=0.8.0
+
+# Dimensionality Reduction
+umap-learn>=0.5.0
+
+# Report Generation
+anthropic>=0.18.0
+groq>=0.4.0
+weasyprint>=60.0
+
+# Utilities
+python-dotenv>=1.0.0
+slowapi>=0.1.9
+pillow>=10.0.0
+tqdm>=4.66.0
+
+# Logging and Monitoring
+structlog>=24.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+hypothesis>=6.98.0
+
+# Development
+black>=24.1.0
+ruff>=0.1.0
+mypy>=1.8.0

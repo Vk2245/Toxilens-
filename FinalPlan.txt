@@ -1,0 +1,999 @@
+
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                         TOXILENS — COMPLETE HACKATHON GAME PLAN                      ║
+║                        CodeCure AI Hackathon | Track A | IIT BHU                     ║
+║                    Drug Toxicity Prediction + Interpretable AI Platform               ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 0: PROJECT IDENTITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Project Name    : ToxiLens
+Tagline         : Interpretable Multi-Modal AI for Drug Toxicity Prediction
+Track           : Track A — Drug Toxicity Prediction (Pharmacology + AI)
+Dataset         : Primary: Tox21 (12k compounds, 12 assays)
+                  Secondary: ZINC250k (250k drug-like molecules)
+                  Optional: ChEMBL API (bioactivity data)
+Core Stack      : Python 3.11 | PyTorch 2.x | PyTorch Geometric | HuggingFace
+                  ChemBERTa-2 | LightGBM | FastAPI | React 18 | Tailwind
+XAI Stack       : Captum | SHAP | Grad-CAM | RDKit
+Deploy          : Docker + Hugging Face Spaces (free GPU)
+GitHub          : https://github.com/[your-handle]/toxilens
+Live Demo       : https://[your-handle].hf.space/toxilens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1: WHAT MAKES US WIN (COMPETITIVE MOAT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT 80% OF TEAMS WILL SUBMIT:
+  - Download Tox21
+  - Morgan fingerprints + XGBoost/RandomForest
+  - Single SHAP bar chart
+  - Streamlit page
+  - Zero XAI depth, zero product polish
+
+WHAT WE ARE BUILDING:
+  1. Tri-modal ML ensemble (ChemBERTa-2 + Multi-task GNN + LightGBM)
+  2. Joint toxicity correlation learning (JLGCN-MTT style)
+  3. Atom-level heatmaps on 2D molecule images (Captum + Grad-CAM)
+  4. SMARTS-based structural alert scanner (150+ known toxicophores)
+  5. UMAP chemical space explorer (interactive Plotly scatter)
+  6. Full ADMET property panel (drug-likeness dashboard)
+  7. Multi-molecule side-by-side comparison
+  8. LLM-generated PDF toxicity assessment report (Claude API)
+  9. De-risking mode (automated bioisostere substitution + LLM rationale)
+  10. Conformal prediction uncertainty quantification
+  11. React production-grade frontend with live HF Spaces deployment
+  12. Professional downloadable PDF report per compound
+
+KEY RESEARCH BACKING (2024-2026 papers):
+  - GPS+ToxKG (2025): AUC 0.956 on NR-AR using knowledge graph + GNN
+  - MoltiTox (Nov 2025): ROC-AUC 0.831 on all 12 Tox21 via multimodal fusion
+  - ChemBERTa-2 (2022, HF): Outperforms D-MPNN on 6/8 MoleculeNet tasks
+  - Dual-stream ChemBERTa+GNN (Jan 2026): SOTA hybrid on toxicity + solubility
+  - JLGCN-MTT (2025): Joint learning across 12 toxicity types improves accuracy
+  - CLADD (Feb 2025): RAG-powered LLM agents for drug discovery tasks
+  - Conformal Prediction for ML (MAPIE library, 2024)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2: SYSTEM ARCHITECTURE (COMPLETE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INPUT LAYER:
+  User provides one of:
+    a) Single SMILES string (text box)
+    b) Drawn molecule (JSME editor)
+    c) CSV file with SMILES column (batch mode)
+    d) SDF/MOL2 file (structure file)
+
+PREPROCESSING LAYER (RDKit):
+  1. SMILES standardization (neutralization, tautomer normalization)
+  2. Molecule validation (reject invalid SMILES gracefully)
+  3. Compute 200+ RDKit molecular descriptors
+  4. Compute Morgan fingerprint (ECFP4, r=2, 2048-bit)
+  5. Compute MACCS keys (167-bit)
+  6. Build molecular graph (atoms=nodes, bonds=edges, atom/bond features)
+  7. Generate 2D coordinate PNG image (for CNN / Grad-CAM / heatmap overlay)
+  8. Compute QED, logP, TPSA, HBD/HBA, MW, rotatable bonds, aromatic rings
+
+MODEL LAYER (PARALLEL):
+  Stream A — SMILES Transformer:
+    - ChemBERTa-2 (seyonec/ChemBERTa-zinc-base-v1 fine-tuned on Tox21)
+    - Output: 768-dim CLS embedding
+    - 12-head classification layer (one per Tox21 assay)
+    - Loss: BCE with class weights for imbalance
+
+  Stream B — Multi-task GNN:
+    - PyTorch Geometric: 4-layer AttentiveFP or GIN
+    - Node features: [atomic_num, degree, hybridization, aromaticity, ring, formal_charge]
+    - Edge features: [bond_type, conjugated, in_ring, stereo]
+    - Readout: global mean+max pooling concatenated
+    - Joint toxicity correlation loss (JLGCN-MTT style)
+    - Output: 256-dim graph embedding → 12-head sigmoid
+    
+  Stream C — Descriptor Baseline:
+    - LightGBM GPU (multi-label, 12 binary heads)
+    - Input: 200 RDKit descriptors + 2048 Morgan bits + 167 MACCS bits
+    - Provides free SHAP values via TreeExplainer
+
+ENSEMBLE LAYER:
+  - Weighted average of logits from all 3 streams
+  - Weights tuned on held-out validation set (scaffold split)
+  - Final output: 12 × probability + composite risk score
+  - Conformal prediction wrapper (MAPIE): adds calibrated intervals
+
+XAI LAYER:
+  - SHAP TreeExplainer → descriptor importance rankings
+  - Captum IntegratedGradients on GNN → atom-level attributions
+  - Grad-CAM on ChemBERTa attention → token-level saliency
+  - SMARTS alert scanner → 150+ structural toxicophores flagged
+  - RDKit Draw.MolToImage + custom color dict → heatmap PNG
+
+FEATURE LAYER:
+  - UMAP embedding (precomputed) → query molecule nearest neighbor
+  - ADMET-AI predictions (10+ ADMET properties)
+  - Bioisostere substitution engine → de-risked SMILES variants
+  - Tanimoto similarity search → similar toxic/safe compounds
+  - LLM report generator (Claude API) → structured PDF output
+
+API LAYER (FastAPI):
+  POST /predict          - single SMILES prediction
+  POST /predict_batch    - CSV upload, returns ranked predictions
+  POST /generate_report  - LLM report generation for a compound
+  POST /what_if          - compare original vs modified SMILES
+  POST /derisk           - generate de-risked variants
+  GET  /similar          - find similar compounds in Tox21
+  GET  /health           - health check
+  GET  /docs             - auto Swagger UI
+
+FRONTEND LAYER (React 18 + Vite + Tailwind):
+  Page 1: Single Compound Analysis
+    - SMILES input / molecule drawer
+    - 2D molecule with atom heatmap overlay
+    - 12-assay probability bar chart
+    - Top-10 SHAP descriptor importance
+    - Structural alerts panel (flagged toxicophores)
+    - ADMET property radar chart
+    - "Generate Report" → PDF download
+    
+  Page 2: Chemical Space Explorer
+    - Interactive Plotly UMAP scatter (12k Tox21 points)
+    - Query molecule as pulsing star
+    - Color by toxicity label
+    - Hover: compound name + SMILES
+    
+  Page 3: Batch Virtual Screening
+    - CSV/SMILES upload widget
+    - Sortable results table (risk score, flagged assays)
+    - Filter by risk threshold slider
+    - Export CSV / Export PDF summary
+    
+  Page 4: De-Risking Lab
+    - Input toxic molecule
+    - Auto-generate 8 bioisostere variants
+    - Side-by-side comparison grid
+    - LLM rationale per modification
+    
+  Page 5: Multi-Molecule Comparison
+    - Paste 2-5 SMILES
+    - Heatmap grid (assays × molecules)
+    - Delta toxicity per assay vs baseline
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3: COMPLETE FILE STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ToxiLens/
+├── README.md                          ← World-class submission document
+├── LICENSE                            ← MIT
+├── .env.example                       ← API keys template
+├── .gitignore
+├── requirements.txt                   ← Python deps pinned
+├── pyproject.toml                     ← Project metadata
+├── docker-compose.yml                 ← Local dev: backend + frontend
+│
+├── docker/
+│   ├── backend.Dockerfile
+│   └── frontend.Dockerfile
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py                    ← FastAPI entry, model preload at startup
+│   │   ├── api/
+│   │   │   ├── routes_predict.py      ← /predict, /predict_batch
+│   │   │   ├── routes_report.py       ← /generate_report (LLM integration)
+│   │   │   ├── routes_derisk.py       ← /derisk, /what_if
+│   │   │   └── routes_search.py       ← /similar
+│   │   ├── core/
+│   │   │   ├── config.py              ← Settings, env vars, model paths
+│   │   │   └── logging.py
+│   │   ├── models/
+│   │   │   ├── descriptor_model.py    ← LightGBM wrapper (12 heads)
+│   │   │   ├── gnn_model.py           ← AttentiveFP/GIN PyG model
+│   │   │   ├── transformer_model.py   ← ChemBERTa-2 fine-tuned
+│   │   │   └── ensemble.py            ← Weighted fusion + conformal wrapper
+│   │   ├── preprocessing/
+│   │   │   ├── rdkit_utils.py         ← SMILES standardize, validate, draw
+│   │   │   ├── descriptors.py         ← 200+ descriptor computation
+│   │   │   ├── graph_builder.py       ← RDKit mol → PyG Data object
+│   │   │   └── fingerprints.py        ← Morgan, MACCS computation
+│   │   ├── explainability/
+│   │   │   ├── shap_utils.py          ← TreeExplainer for LightGBM
+│   │   │   ├── captum_utils.py        ← IntegratedGradients for GNN
+│   │   │   ├── grad_cam.py            ← Grad-CAM for ChemBERTa attention
+│   │   │   └── heatmap_renderer.py    ← RDKit atom coloring → PNG
+│   │   ├── features/
+│   │   │   ├── structural_alerts.py   ← 150+ SMARTS toxicophore patterns
+│   │   │   ├── admet_predictor.py     ← ADMET-AI wrapper
+│   │   │   ├── umap_search.py         ← Nearest neighbor in precomputed UMAP
+│   │   │   └── derisking.py           ← Bioisostere substitution engine
+│   │   ├── report/
+│   │   │   ├── llm_reporter.py        ← Claude API / Mistral report generator
+│   │   │   └── pdf_exporter.py        ← WeasyPrint → PDF with RDKit images
+│   │   └── schemas/
+│   │       ├── prediction.py          ← Pydantic request/response schemas
+│   │       ├── batch.py
+│   │       └── report.py
+│   └── tests/
+│       ├── test_smiles_parsing.py
+│       ├── test_predict_endpoint.py
+│       ├── test_shap.py
+│       └── test_structural_alerts.py
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── SingleAnalysis.tsx     ← Main prediction page
+│   │   │   ├── ChemicalSpace.tsx      ← UMAP explorer
+│   │   │   ├── BatchScreening.tsx     ← CSV upload + results
+│   │   │   ├── DeRiskLab.tsx          ← Modification playground
+│   │   │   └── MultiCompare.tsx       ← Side-by-side comparison
+│   │   ├── components/
+│   │   │   ├── MoleculeViewer.tsx     ← RDKit.js renderer + heatmap
+│   │   │   ├── ToxicityRadar.tsx      ← Recharts radar for 12 assays
+│   │   │   ├── AdmetPanel.tsx         ← Drug-likeness dashboard
+│   │   │   ├── ShapChart.tsx          ← Horizontal bar chart
+│   │   │   ├── AlertBadges.tsx        ← Structural alert pills
+│   │   │   ├── ReportModal.tsx        ← LLM report + PDF download
+│   │   │   └── UmapPlot.tsx           ← Plotly scatter
+│   │   ├── api/
+│   │   │   ├── predict.ts
+│   │   │   ├── report.ts
+│   │   │   └── batch.ts
+│   │   └── styles/
+│   │       └── globals.css
+│   └── public/
+│       └── demo_molecules.json        ← Preloaded examples
+│
+├── ml/
+│   ├── data/
+│   │   ├── raw/                       ← Downloaded Tox21 files here
+│   │   └── processed/                 ← Pickled features, graphs
+│   ├── notebooks/
+│   │   ├── 01_eda_tox21.ipynb         ← Label distributions, missing values
+│   │   ├── 02_train_descriptor.ipynb  ← LightGBM baseline
+│   │   ├── 03_train_gnn.ipynb         ← GNN with joint loss
+│   │   ├── 04_finetune_chemberta.ipynb ← ChemBERTa-2 fine-tuning
+│   │   ├── 05_ensemble.ipynb          ← Combine + evaluate
+│   │   ├── 06_umap_embedding.ipynb    ← Precompute chemical space
+│   │   └── 07_xai_validation.ipynb    ← Verify SHAP + Captum outputs
+│   ├── scripts/
+│   │   ├── preprocess_tox21.py        ← Full preprocessing pipeline
+│   │   ├── train_descriptor.py
+│   │   ├── train_gnn.py
+│   │   ├── finetune_chemberta.py
+│   │   ├── build_ensemble.py
+│   │   ├── compute_umap.py
+│   │   └── evaluate_all.py            ← Final metrics table
+│   └── artifacts/                     ← Saved model files
+│       ├── lgbm_model.pkl
+│       ├── gnn_model.pt
+│       ├── chemberta_finetuned/       ← HF-format model dir
+│       ├── ensemble_weights.json
+│       ├── scaler.pkl
+│       ├── shap_background.pkl
+│       └── umap_embedding.npy
+│
+└── docs/
+    ├── architecture.md
+    ├── api_spec.md
+    └── screenshots/                   ← Demo GIFs and images
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4: HOUR-BY-HOUR EXECUTION PLAN (48-HOUR HACKATHON)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+═══ PRE-HACK (if allowed) ═══════════════════════════════════════════════════════════
+
+[ ] Set up conda environment: python=3.11, rdkit, torch, torch_geometric
+[ ] Install: lightgbm, transformers, captum, shap, mapie, umap-learn, admet-ai
+[ ] Install: fastapi, uvicorn, weasyprint, anthropic
+[ ] Clone repo skeleton, set up folders
+[ ] Download Tox21 from Kaggle: epicskills/tox21-dataset
+[ ] Skim: MoltiTox paper, JLGCN-MTT paper, ChemBERTa-2 paper
+[ ] Write RDKit utility functions (SMILES → descriptors, SMILES → graph)
+[ ] Verify rdkit.Chem, torch_geometric, and transformers all import cleanly
+
+═══ HOUR 0–2: SETUP + EDA ══════════════════════════════════════════════════════════
+
+[H0:00] git init toxilens, create full folder structure
+[H0:15] pip install all dependencies, verify imports in test_env.py
+[H0:30] Download and unzip Tox21 dataset to ml/data/raw/
+[H0:45] Run 01_eda_tox21.ipynb:
+          - Check shape: expect ~12k rows, 13 cols (SMILES + 12 labels)
+          - Count missing values per assay (some have 40-60% missing!)
+          - Plot label distribution: most assays are 95%+ negative (imbalanced!)
+          - Note: USE AUROC not accuracy — accuracy is misleading here
+          - Compute class weights for each assay: pos_weight = n_neg / n_pos
+[H1:30] Standardize all SMILES with RDKit (neutralize, remove salts, canonicalize)
+[H2:00] Commit: "Initial EDA and data preprocessing complete"
+
+IMPORTANT EDA FINDINGS TO HANDLE:
+  - NR-AhR: ~1.6% positive → pos_weight ~ 60
+  - SR-p53: ~3.2% positive → pos_weight ~ 30
+  - Missing labels: use mask in loss function (don't backprop on missing)
+  - Train/val split: USE SCAFFOLD SPLIT (Bemis-Murcko), not random!
+    → Random split leaks info (similar molecules in both sets)
+    → Scaffold split is the MoleculeNet standard — judges notice this
+
+═══ HOUR 2–6: BASELINE MODEL (SAFETY NET) ══════════════════════════════════════════
+
+[H2:00] Run preprocessing script: ml/scripts/preprocess_tox21.py
+          Output: ml/data/processed/tox21_features.pkl
+          Contains: SMILES, 200 descriptors, Morgan 2048, MACCS 167, 12 labels
+          
+[H2:45] Train LightGBM baseline (02_train_descriptor.ipynb):
+          - 12 separate binary classifiers (one per assay)
+          - Handle missing labels: only use rows where label is not NaN
+          - Use pos_weight per assay for class imbalance
+          - Scaffold split: 80/10/10
+          - Metric: AUROC per assay + mean AUROC
+          - Expected: 0.74–0.78 mean AUROC
+          
+[H3:30] SHAP immediately after LightGBM:
+          from shap import TreeExplainer
+          explainer = TreeExplainer(lgbm_model)
+          shap_vals = explainer.shap_values(X_test)
+          → Save explainer background set (200 samples) to pkl
+          
+[H4:00] FastAPI skeleton:
+          - backend/app/main.py: load LightGBM + scaler at startup
+          - POST /predict: parse SMILES → descriptors → predict → SHAP
+          - Test with curl: curl -X POST /predict -d '{"smiles":"CC(=O)O"}'
+          - Expected latency: <50ms on CPU
+          
+[H5:00] Structural Alerts (quick win!):
+          - Copy SMARTS patterns into structural_alerts.py (150+ patterns)
+          - Function: scan_alerts(mol) → list of {name, atoms, severity}
+          - Add to /predict response
+          - DEMO VALUE: atoms light up immediately, no training needed
+          
+[H5:45] Commit: "Baseline LightGBM + SHAP + Structural Alerts + FastAPI live"
+          → TEST: end-to-end predict works with aspirin SMILES
+
+═══ HOUR 6–14: GNN PIPELINE ════════════════════════════════════════════════════════
+
+[H6:00] Build graph constructor (graph_builder.py):
+          from torch_geometric.data import Data
+          
+          ATOM_FEATURES: [atomic_num(one-hot, 118), degree(0-10), 
+                          hybridization(SP/SP2/SP3/other), is_aromatic,
+                          in_ring, formal_charge, num_Hs]
+          BOND_FEATURES: [bond_type(single/double/triple/aromatic),
+                          is_conjugated, is_in_ring, stereo]
+          
+          Precompute graphs for all 12k Tox21 molecules, save as .pt files
+          
+[H7:00] GNN model architecture (gnn_model.py):
+          class ToxGNN(torch.nn.Module):
+            - 4 x AttentiveFP or GIN layers (hidden_dim=256)
+            - Global mean+max pooling → concatenate → 512-dim
+            - Dropout(0.3) for regularization
+            - 12 sigmoid heads (one per assay)
+            - Forward pass includes mask for missing labels
+            
+[H8:00] GNN training (03_train_gnn.ipynb):
+          JOINT CORRELATION LOSS (JLGCN-MTT style):
+            loss_standard = BCE_masked(preds, labels, mask)
+            
+            # Compute pairwise assay correlations from training data
+            corr_matrix = compute_label_correlations(y_train)
+            
+            # Encourage consistent predictions for correlated assays
+            loss_correlation = correlation_consistency_loss(preds, corr_matrix)
+            
+            total_loss = loss_standard + 0.1 * loss_correlation
+            
+          Optimizer: AdamW, lr=1e-3, weight_decay=1e-4
+          Scheduler: CosineAnnealingLR (T_max=50)
+          Batch size: 64
+          Epochs: 100 (early stopping on val AUROC, patience=15)
+          Expected: 0.80–0.84 mean AUROC
+          
+[H10:00] Captum XAI for GNN:
+          from captum.attr import IntegratedGradients
+          
+          ig = IntegratedGradients(gnn_model)
+          attributions = ig.attribute(
+              graph_input, 
+              target=assay_idx,
+              n_steps=50
+          )
+          # attributions shape: [num_atoms, num_features]
+          # Sum over features → per-atom importance score
+          
+          atom_importances = attributions.sum(dim=-1).abs()
+          → Test: verify heatmap looks chemically sensible on aspirin
+          
+[H11:00] Heatmap renderer (heatmap_renderer.py):
+          from rdkit.Chem.Draw import SimilarityMaps
+          
+          def render_heatmap(mol, atom_weights, size=(400,400)):
+              # Normalize weights to [0,1]
+              # Map to RDKit color scheme (red=high, blue=low)
+              # Return PNG bytes
+              img = Draw.MolToImage(mol, size=size, 
+                                    highlightAtoms=list(range(mol.NumAtoms())),
+                                    highlightAtomColors=weight_to_colormap(atom_weights))
+              return img
+              
+[H12:30] Add GNN to FastAPI:
+          /predict now returns: lgbm_probs + gnn_probs + atom_heatmap_b64
+          Frontend can show: molecule image with colored atoms
+          
+[H13:30] UMAP Chemical Space (compute_umap.py):
+          import umap
+          
+          # Precompute on ALL Tox21 train molecules
+          reducer = umap.UMAP(n_components=2, n_neighbors=15, 
+                               min_dist=0.1, random_state=42,
+                               metric='jaccard')  # for binary fingerprints
+          embedding = reducer.fit_transform(morgan_fps_train)
+          
+          # Save embedding, SMILES, labels as JSON for frontend
+          umap_data = {
+              "x": embedding[:,0].tolist(),
+              "y": embedding[:,1].tolist(), 
+              "smiles": train_smiles,
+              "labels": train_labels_dict
+          }
+          
+[H14:00] Commit: "GNN trained + Captum XAI + heatmap renderer + UMAP computed"
+
+═══ HOUR 14–20: CHEMBERTA-2 FINE-TUNING ════════════════════════════════════════════
+
+[H14:00] ChemBERTa-2 setup (04_finetune_chemberta.ipynb):
+          from transformers import AutoTokenizer, AutoModelForSequenceClassification
+          
+          MODEL_NAME = "seyonec/ChemBERTa-zinc-base-v1"
+          tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+          
+          # Add 12-class multi-label head
+          model = AutoModelForSequenceClassification.from_pretrained(
+              MODEL_NAME, 
+              num_labels=12,
+              problem_type="multi_label_classification"
+          )
+          
+[H14:30] Fine-tuning config:
+          - Optimizer: AdamW, lr=2e-5 (SMALL for transformer fine-tuning!)
+          - Scheduler: linear warmup (10% steps) + cosine decay
+          - Batch size: 32 (gradient accumulation steps=2 if GPU OOM)
+          - Epochs: 5–8 (transformer needs fewer epochs, overfits fast)
+          - Mixed precision: use torch.cuda.amp.autocast()
+          - Handle missing labels: set missing to -1, mask in loss
+          - Save best checkpoint by val mean AUROC
+          
+[H15:00] Training loop (simplified):
+          for epoch in range(8):
+              for batch in train_dataloader:
+                  with autocast():
+                      outputs = model(**batch)
+                      logits = outputs.logits  # [batch, 12]
+                      
+                      # Masked BCE loss
+                      mask = batch['labels'] != -1
+                      loss = F.binary_cross_entropy_with_logits(
+                          logits[mask], 
+                          batch['labels'][mask].float(),
+                          pos_weight=assay_weights[mask]
+                      )
+                  
+                  scaler.scale(loss).backward()
+                  scaler.step(optimizer)
+                  
+[H17:00] Save fine-tuned model to ml/artifacts/chemberta_finetuned/
+          Expected AUROC: 0.78–0.83 mean across 12 assays
+          
+[H17:30] Add to FastAPI: load ChemBERTa at startup, add to /predict pipeline
+          
+[H18:00] Build Ensemble (05_ensemble.ipynb):
+          # Logit-level fusion
+          lgbm_logits = logit(lgbm_proba)      # 12-dim
+          gnn_logits = gnn_output               # 12-dim  
+          bert_logits = chemberta_output.logits # 12-dim
+          
+          # Learn weights on validation set
+          from scipy.optimize import minimize
+          
+          def ensemble_loss(weights):
+              w = softmax(weights)
+              combined = w[0]*lgbm_logits + w[1]*gnn_logits + w[2]*bert_logits
+              return -mean_auroc(sigmoid(combined), y_val)
+              
+          result = minimize(ensemble_loss, x0=[1,1,1], method='Nelder-Mead')
+          ensemble_weights = softmax(result.x)
+          
+          Expected ensemble AUROC: 0.84–0.87 mean
+          
+[H19:00] Conformal Prediction wrapper (MAPIE):
+          from mapie.classification import MapieClassifier
+          
+          mapie = MapieClassifier(estimator=ensemble_model, cv="prefit")
+          mapie.fit(X_calib, y_calib)
+          y_pred, prediction_sets = mapie.predict(X_test, alpha=0.15)
+          # prediction_sets: {TOXIC} or {SAFE} or {TOXIC, SAFE} (uncertain)
+          
+[H20:00] Commit: "ChemBERTa fine-tuned + Ensemble + Conformal Prediction"
+         → FULL MODEL PIPELINE COMPLETE. Everything else is frontend + features.
+
+═══ HOUR 20–26: LLM REPORT + ADMET ═════════════════════════════════════════════════
+
+[H20:00] LLM Report Generator (llm_reporter.py):
+          import anthropic
+          
+          SYSTEM_PROMPT = """
+          You are a senior medicinal chemist at a pharmaceutical company.
+          Given ML toxicity predictions and molecular data, write a professional
+          toxicity assessment report. Be precise but accessible. 
+          
+          Structure your report as:
+          1. EXECUTIVE SUMMARY (3 sentences, risk level: HIGH/MEDIUM/LOW)
+          2. PATHWAY ANALYSIS (explain each flagged assay mechanistically)
+          3. STRUCTURAL DRIVERS (interpret SHAP features and flagged atoms)
+          4. STRUCTURAL ALERTS (explain detected toxicophores)
+          5. DE-RISKING RECOMMENDATIONS (3-5 specific modifications)
+          6. REGULATORY OUTLOOK (REACH, FDA context if relevant)
+          7. CONFIDENCE ASSESSMENT (based on prediction certainty)
+          """
+          
+          def generate_report(compound_data: dict) -> str:
+              client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+              
+              context = f"""
+              Compound: {compound_data['smiles']}
+              Molecular Weight: {compound_data['mw']:.2f}
+              logP: {compound_data['logp']:.2f}
+              TPSA: {compound_data['tpsa']:.2f} Å²
+              HBD/HBA: {compound_data['hbd']}/{compound_data['hba']}
+              
+              Tox21 Predictions (12 assays):
+              {format_predictions(compound_data['predictions'])}
+              
+              Top Structural Drivers (SHAP):
+              {format_shap(compound_data['shap_top10'])}
+              
+              Structural Alerts Detected:
+              {format_alerts(compound_data['alerts'])}
+              
+              Prediction Uncertainty:
+              {format_uncertainty(compound_data['conformal_sets'])}
+              """
+              
+              message = client.messages.create(
+                  model="claude-sonnet-4-6",
+                  max_tokens=1500,
+                  system=SYSTEM_PROMPT,
+                  messages=[{"role": "user", "content": context}]
+              )
+              return message.content[0].text
+              
+[H21:30] PDF Exporter (pdf_exporter.py):
+          from weasyprint import HTML, CSS
+          
+          def export_pdf(report_text, molecule_img, shap_img, compound_data):
+              html_content = render_report_template(
+                  report_text=report_text,
+                  molecule_img=molecule_img,
+                  compound_data=compound_data
+              )
+              pdf_bytes = HTML(string=html_content).write_pdf()
+              return pdf_bytes
+              
+[H22:30] ADMET Panel (admet_predictor.py):
+          # Option A: use admet-ai library (pip install admet-ai)
+          from admet_ai import ADMETCalculator
+          calc = ADMETCalculator()
+          props = calc.predict(smiles)
+          
+          # Option B: compute manually with RDKit
+          # Lipinski RO5, Veber filters, QED, logP, TPSA
+          # hERG: use pre-trained model from TDC
+          
+          ADMET PROPERTIES TO SHOW:
+            - QED (drug-likeness score 0-1)
+            - Lipinski violations (0-4)
+            - Oral bioavailability (Caco-2 permeability)
+            - BBB penetration
+            - CYP2D6/3A4 inhibition (cytochrome P450)
+            - hERG inhibition (cardiotoxicity risk)
+            - Water solubility (logS)
+            - Half-life estimate
+            - Metabolic stability
+            
+[H24:00] Commit: "LLM Report + PDF Export + ADMET Panel complete"
+
+═══ HOUR 26–34: FRONTEND SPRINT ═════════════════════════════════════════════════════
+
+[H26:00] React setup:
+          npm create vite@latest toxilens-frontend -- --template react-ts
+          npm install recharts plotly.js-dist react-plotly.js axios
+          npm install @headlessui/react lucide-react
+          npx tailwindcss init
+
+[H26:30] Core layout + routing (React Router):
+          / → SingleAnalysis (default)
+          /space → ChemicalSpace
+          /batch → BatchScreening  
+          /derisk → DeRiskLab
+          /compare → MultiCompare
+          
+[H27:00] MoleculeViewer.tsx:
+          - Renders base64 PNG from backend (RDKit generated)
+          - Overlays atom heatmap colors as SVG circle layer
+          - Structural alert badges positioned at flagged atom coordinates
+          - Zoom/pan support
+          
+[H28:00] ToxicityRadar.tsx + AssayBarChart.tsx:
+          - Recharts RadarChart for 12 assays overview
+          - Recharts BarChart for individual assay scores
+          - Color coding: RED > 0.7, AMBER 0.4–0.7, GREEN < 0.4
+          - Tooltip: assay name + biological pathway description
+          
+[H29:00] ShapChart.tsx:
+          - Horizontal bar chart, top 10 features
+          - Positive = red (toxic contribution), negative = blue (protective)
+          - Feature names human-readable (not raw descriptor codes)
+          
+[H30:00] ReportModal.tsx:
+          - "Generate Report" button → POST /generate_report → streaming response
+          - Show LLM text progressively (streaming via SSE or chunked response)
+          - Download PDF button → triggers blob download
+          - Estimated time: 8-15 seconds (show loading animation)
+          
+[H31:30] UmapPlot.tsx (ChemicalSpace page):
+          - Plotly scatter with 12k points (preloaded JSON)
+          - Query molecule as highlighted star with animation
+          - Color by first flagged assay
+          - Hover shows SMILES + compound name
+          - Click point: loads it into SingleAnalysis
+          
+[H32:30] BatchScreening page:
+          - Drag-drop CSV upload
+          - Progress bar during batch processing
+          - Sortable table: rank by composite risk score
+          - Filter by risk threshold slider
+          - Export CSV button
+          
+[H33:30] Commit: "Frontend core complete — Single Analysis, UMAP, Batch, Report"
+
+═══ HOUR 34–40: POLISH + DE-RISKING ════════════════════════════════════════════════
+
+[H34:00] DeRiskLab (if time allows):
+          Backend: derisking.py
+            - Scan for structural alerts on input molecule
+            - For each alert, apply bioisostere replacements:
+              NO2 → CN, -Cl → -F, aldehyde → alcohol, etc.
+            - Validate new SMILES (must parse cleanly)
+            - Batch predict all variants
+            - Rank by ΔToxicity (most reduced first)
+            - Send top-5 to LLM for modification rationale
+            
+          Frontend: DeRiskLab.tsx
+            - Side-by-side molecule cards
+            - Delta toxicity bar per assay
+            - LLM rationale below each variant
+            
+[H36:00] Demo preparation:
+          CURATED DEMO MOLECULES (load as presets):
+          
+          1. Aspirin (safe-ish reference):
+             SMILES: CC(=O)Oc1ccccc1C(=O)O
+             Story: NSAID, ester group is labile, some SR-p53 signal
+             
+          2. Doxorubicin (known cardiotoxic):
+             SMILES: (full doxorubicin SMILES)
+             Story: Anthracycline antibiotic, hERG blocker, quinone alerts
+             
+          3. Bisphenol A (endocrine disruptor):
+             SMILES: CC(C)(c1ccc(O)cc1)c1ccc(O)cc1
+             Story: NR-AhR positive, nuclear receptor disruption
+             
+          4. Ibuprofen (generally safe NSAID):
+             SMILES: CC(C)Cc1ccc(CC(C)C(=O)O)cc1  (wait use correct one)
+             Story: Contrast with aspirin — different toxicity profile
+             
+          5. Tamoxifen (cancer drug, hepatotoxic):
+             SMILES: (full tamoxifen SMILES)
+             Story: Metabolites are mutagenic, striking heatmap
+             
+[H37:00] Color palette finalization:
+          --tox-red: #E24B4A        (HIGH risk)
+          --tox-amber: #EF9F27      (MODERATE risk)
+          --tox-green: #1D9E75      (LOW risk / safe)
+          --tox-gray: #888780       (no prediction)
+          Background: white surfaces, clean whitespace
+          
+[H38:00] README final pass (ensure all screenshots and demo GIF included)
+[H39:00] Record demo GIF (Kap or OBS Studio):
+          30-second screen recording:
+          Paste aspirin → see heatmap → click Generate Report → PDF downloads
+          Then batch upload 5 molecules → see ranked table
+          
+[H40:00] Commit: "Demo-ready release — all features working"
+
+═══ HOUR 40–46: DEPLOYMENT ══════════════════════════════════════════════════════════
+
+[H40:00] Docker setup:
+          docker-compose.yml:
+            services:
+              backend:
+                build: ./docker/backend.Dockerfile
+                ports: ["8000:8000"]
+                volumes: ["./ml/artifacts:/app/artifacts"]
+                env_file: .env
+              frontend:
+                build: ./docker/frontend.Dockerfile
+                ports: ["3000:3000"]
+                
+[H41:00] Test Docker compose locally:
+          docker-compose up --build
+          Verify: http://localhost:3000 loads, predictions work
+          
+[H42:00] Hugging Face Spaces deployment:
+          Option A: Gradio wrapper (easiest, 30 min):
+            - Wrap FastAPI predictions in a Gradio interface
+            - Deploy to HF Spaces (free, public URL)
+            
+          Option B: Docker Space (cleaner, 1 hr):
+            - Create HF Space with Docker template
+            - Push full repo
+            - HF provides free GPU (T4) for inference
+            
+          CRITICAL: Get working public URL before submission deadline
+          
+[H44:00] Smoke test live deployment:
+          - Test single prediction
+          - Test batch upload  
+          - Test LLM report generation
+          - Test PDF download
+          - Test on mobile viewport
+          
+[H45:00] Final GitHub cleanup:
+          - Remove any .env or API keys from git history
+          - Add .env.example with placeholder values
+          - Ensure README demo GIF shows live URL
+          - Tag release: v1.0.0
+          
+[H46:00] Commit: "Production deployment live — HF Spaces URL confirmed"
+
+═══ HOUR 46–48: FINAL QA + SUBMISSION ══════════════════════════════════════════════
+
+[H46:00] Rehearse demo script (2 minutes max):
+          0:00 — "Drug toxicity kills 30% of candidates. ToxiLens predicts it early."
+          0:15 — Paste aspirin SMILES → show heatmap
+          0:35 — Click "Generate Report" → show PDF
+          0:50 — Switch to batch → upload CSV → show ranked table
+          1:10 — Show UMAP → point out query molecule location
+          1:30 — Show ADMET panel → drug-likeness dashboard
+          1:50 — "No other tool combines ML + XAI + LLM + full ADMET in one platform."
+          
+[H47:00] Final checklist:
+          [ ] GitHub repo is public and clean
+          [ ] README renders correctly on GitHub (images, badges, architecture diagram)
+          [ ] Live demo URL is working and responsive
+          [ ] Demo GIF is in README
+          [ ] All model metrics table is accurate
+          [ ] Requirements.txt is complete (test fresh install)
+          [ ] No hardcoded API keys in code
+          [ ] Docker compose works on clean machine
+          
+[H48:00] SUBMIT!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5: TECHNICAL SPECS & KEY CODE SNIPPETS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PYTHON ENVIRONMENT (requirements.txt key packages):
+  # Chemistry
+  rdkit>=2023.9.1
+  
+  # ML
+  torch>=2.1.0
+  torch-geometric>=2.4.0
+  transformers>=4.37.0
+  lightgbm>=4.3.0
+  scikit-learn>=1.4.0
+  
+  # XAI
+  captum>=0.7.0
+  shap>=0.44.0
+  mapie>=0.8.0
+  
+  # Features  
+  umap-learn>=0.5.5
+  admet-ai>=1.0.0
+  
+  # Backend
+  fastapi>=0.109.0
+  uvicorn[standard]>=0.27.0
+  pydantic>=2.5.0
+  anthropic>=0.18.0
+  weasyprint>=62.0
+  
+  # Utils
+  pandas>=2.2.0
+  numpy>=1.26.0
+  pillow>=10.2.0
+  tqdm>=4.66.0
+  plotly>=5.18.0
+
+NODE ENVIRONMENT (package.json key packages):
+  react: ^18.2.0
+  react-dom: ^18.2.0
+  vite: ^5.0.0
+  typescript: ^5.2.0
+  tailwindcss: ^3.4.0
+  recharts: ^2.12.0
+  plotly.js-dist: ^2.30.0
+  axios: ^1.6.0
+  react-router-dom: ^6.21.0
+  lucide-react: ^0.312.0
+
+SCAFFOLD SPLIT (CRITICAL — USE THIS NOT RANDOM):
+  from deepchem.splits import ScaffoldSplitter
+  splitter = ScaffoldSplitter()
+  train, valid, test = splitter.split(dataset, frac_train=0.8, frac_valid=0.1, frac_test=0.1)
+  
+  # Or manual with RDKit:
+  from rdkit.Chem.Scaffolds import MurckoScaffold
+  def get_scaffold(smiles):
+      mol = Chem.MolFromSmiles(smiles)
+      scaffold = MurckoScaffold.GetScaffoldForMol(mol)
+      return Chem.MolToSmiles(scaffold)
+
+MASKED LOSS (HANDLE MISSING LABELS — CRITICAL):
+  def masked_bce_loss(logits, labels, mask):
+      """
+      logits: [batch, 12]
+      labels: [batch, 12] — NaN where label is missing
+      mask:   [batch, 12] — True where label exists
+      """
+      loss = F.binary_cross_entropy_with_logits(
+          logits, labels, reduction='none'
+      )
+      masked_loss = loss * mask.float()
+      return masked_loss.sum() / mask.float().sum()
+
+ATOM HEATMAP KEY FUNCTION:
+  def atoms_to_heatmap_png(mol, weights, size=(400,400)):
+      from rdkit.Chem.Draw import rdMolDraw2D
+      from matplotlib.colors import Normalize
+      from matplotlib.cm import RdYlGn
+      
+      norm = Normalize(vmin=0, vmax=max(weights))
+      cmap = RdYlGn  # green=safe, yellow=moderate, red=toxic
+      
+      drawer = rdMolDraw2D.MolDraw2DSVG(*size)
+      colors = {}
+      for i, w in enumerate(weights):
+          rgba = cmap(1 - norm(w))  # invert: high weight = red
+          colors[i] = (rgba[0], rgba[1], rgba[2])
+      
+      drawer.DrawMolecule(mol, highlightAtoms=list(range(len(weights))),
+                         highlightAtomColors=colors)
+      drawer.FinishDrawing()
+      return drawer.GetDrawingText()  # SVG string
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6: EXPECTED METRICS (TO PUT IN README)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Model Performance (Mean AUROC across 12 Tox21 assays):
+  LightGBM (descriptor baseline)         : ~0.776
+  Multi-task GNN (PyG + joint loss)       : ~0.821
+  ChemBERTa-2 (fine-tuned)               : ~0.809
+  Ensemble (3-stream weighted fusion)     : ~0.847
+  Literature SOTA (GPS+ToxKG, 2025)       : 0.956 (single task, NR-AR only)
+  Literature SOTA (MoltiTox, 2025)        : 0.831 (12-task average)
+
+Per-Assay Expected (Ensemble):
+  NR-AR:   0.88      (nuclear receptor: androgen)
+  NR-AhR:  0.84      (nuclear receptor: aryl hydrocarbon)
+  NR-ER:   0.79      (nuclear receptor: estrogen alpha)
+  SR-p53:  0.82      (stress response: p53)
+  SR-MMP:  0.80      (mitochondrial membrane potential)
+  NR-PPAR: 0.77      (nuclear receptor: PPAR gamma)
+  ... (remaining 6 assays in 0.75–0.85 range)
+
+API Performance:
+  Single prediction (CPU):  <200ms
+  Single prediction (GPU):  <30ms
+  Batch 100 molecules:      <8 seconds
+  LLM report generation:    10–20 seconds
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7: RISK MITIGATION & FALLBACK PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RISK: GPU OOM during ChemBERTa fine-tuning
+FIX:  Reduce batch_size to 16 + gradient_accumulation_steps=4
+      Use gradient checkpointing: model.gradient_checkpointing_enable()
+      
+RISK: ChemBERTa training takes too long
+FIX:  Use LoRA fine-tuning (PEFT library) — trains only 0.1% of parameters
+      from peft import get_peft_model, LoraConfig
+      lora_config = LoraConfig(r=16, lora_alpha=32, target_modules=["query","value"])
+      model = get_peft_model(base_model, lora_config)
+
+RISK: Anthropic API rate limit / cost
+FIX:  Use Groq (free, fast Llama-3 70B via groq.com API)
+      or Mistral API (free tier)
+      or run Mistral-7B locally via Ollama (ollama pull mistral)
+      
+RISK: admet-ai library doesn't install cleanly
+FIX:  Compute ADMET manually with RDKit:
+      QED: rdkit.Chem.QED.qed(mol)
+      Lipinski: MW<500, logP<5, HBD<5, HBA<10
+      TPSA: rdkit.Chem.Descriptors.TPSA(mol)
+      
+RISK: WeasyPrint PDF export has rendering issues
+FIX:  Use html2pdf.js (browser-side PDF generation, zero backend dependency)
+      import html2pdf from 'html2pdf.js'
+      html2pdf().from(reportElement).save('toxilens_report.pdf')
+      
+RISK: React frontend takes too long
+FALLBACK: Use Streamlit for frontend (50% less code, still looks professional)
+          streamlit run app.py  — deploy to Streamlit Cloud (free, 1 click)
+
+MINIMUM VIABLE SUBMISSION (if everything goes wrong):
+  - LightGBM model with SHAP bar chart (2 hrs)
+  - Structural Alerts scanner (1 hr)
+  - Single FastAPI endpoint (1 hr)  
+  - Streamlit app with molecule image + SHAP + alerts (2 hrs)
+  - TOTAL: 6 hours, still beats 70% of teams
+
+IDEAL SUBMISSION (if everything goes right):
+  - All 3 models + ensemble
+  - Full XAI pipeline
+  - All 5 frontend pages
+  - LLM report + PDF
+  - Live HF Spaces URL
+  - Professional README with demo GIF
+  - TOTAL: 48 hours, top 3 guaranteed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8: DEMO SCRIPT (REHEARSE THIS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[0:00] HOOK:
+  "Drug development fails 90% of the time. 30% of failures are due to 
+   unexpected toxicity discovered too late. ToxiLens predicts toxicity 
+   at the molecular level — before a single experiment is run."
+
+[0:20] DEMO — Single Compound:
+  - Paste doxorubicin SMILES (known cardiotoxic)
+  - "Watch the molecule light up — red atoms are the toxic drivers"
+  - Point to heatmap: quinone ring + aromatic system highlighted
+  - "Our ensemble of three AI models — a graph neural network, a 
+     molecular transformer, and a descriptor model — all agree: 
+     HIGH RISK on cardiac toxicity assays"
+
+[0:45] DEMO — LLM Report:
+  - Click "Generate AI Report"
+  - "While that loads — the report is being written by an LLM that 
+     receives our model's predictions as structured scientific context"
+  - Report streams in: pathway analysis, structural alerts, modifications
+  - "It can be downloaded as a professional PDF — ready for lab review"
+
+[1:10] DEMO — UMAP:
+  - Switch to Chemical Space
+  - "Here are all 12,000 Tox21 compounds plotted in chemical space.
+     Our query molecule appears here — surrounded by other cardiotoxic 
+     anthracyclines. The model knows where it lives in chemical space."
+
+[1:30] DEMO — Batch Screening:
+  - Upload 10-compound CSV
+  - "A medicinal chemist can now screen an entire compound library,
+     ranked by risk score, in under 10 seconds."
+
+[1:50] CLOSE:
+  "ToxiLens isn't a model. It's a complete toxicity intelligence platform.
+   Thank you."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+END OF FINAL PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Built with research. Shipped with purpose.
+ToxiLens — Making drugs safer before they leave the lab.
