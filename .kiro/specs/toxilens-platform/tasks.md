@@ -143,7 +143,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Save best model checkpoint to ml/artifacts/
     - _Requirements: 26.10-26.13_
   
-  - [~] 8.4 Train and evaluate GNN model
+  - [x] 8.4 Train and evaluate GNN model
     - Execute train_gnn.py to train model
     - Compute per-assay AUROC on test set
     - Verify mean AUROC ≥ 0.80 target
@@ -165,7 +165,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Save best checkpoint to ml/artifacts/chemberta_finetuned/
     - _Requirements: 27.1-27.12_
 
-  - [~] 9.2 Train and evaluate ChemBERTa model
+  - [x] 9.2 Train and evaluate ChemBERTa model
     - Execute train_chemberta.py to fine-tune model
     - Compute per-assay AUROC on test set
     - Verify mean AUROC ≥ 0.78 target
