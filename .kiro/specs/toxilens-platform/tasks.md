@@ -143,7 +143,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Save best model checkpoint to ml/artifacts/
     - _Requirements: 26.10-26.13_
   
-  - [~] 8.4 Train and evaluate GNN model
+  - [x] 8.4 Train and evaluate GNN model
     - Execute train_gnn.py to train model
     - Compute per-assay AUROC on test set
     - Verify mean AUROC ≥ 0.80 target
@@ -165,7 +165,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Save best checkpoint to ml/artifacts/chemberta_finetuned/
     - _Requirements: 27.1-27.12_
 
-  - [~] 9.2 Train and evaluate ChemBERTa model
+  - [ ] 9.2 Train and evaluate ChemBERTa model
     - Execute train_chemberta.py to fine-tune model
     - Compute per-assay AUROC on test set
     - Verify mean AUROC ≥ 0.78 target
@@ -186,7 +186,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Save optimized weights to ml/artifacts/ensemble_weights.json
     - _Requirements: 28.3-28.7_
   
-  - [~] 10.3 Optimize and evaluate ensemble
+  - [ ] 10.3 Optimize and evaluate ensemble
     - Execute optimize_ensemble.py to find optimal weights
     - Compute per-assay AUROC on test set
     - Verify mean AUROC ≥ 0.80 and improvement ≥ 0.02 over best individual model
@@ -207,14 +207,14 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Generate prediction sets: {SAFE}, {TOXIC}, or {SAFE, TOXIC}
     - _Requirements: 2.11, 29.1-29.6_
   
-  - [~] 11.2 Evaluate conformal prediction
+  - [ ] 11.2 Evaluate conformal prediction
     - Compute empirical coverage on test set
     - Verify coverage ≥ 80% target
     - Measure additional latency (<50ms target)
     - _Requirements: 29.9, 29.10_
 
-- [ ] 12. Implement composite risk score and classification
-  - [~] 12.1 Create backend/app/models/risk_scorer.py
+- [x] 12. Implement composite risk score and classification
+  - [x] 12.1 Create backend/app/models/risk_scorer.py
     - Implement compute_composite_risk() as weighted average of 12 assay probabilities
     - Implement classify_risk_level() returning HIGH (>0.6), MEDIUM (0.35-0.6), or LOW (<0.35)
     - _Requirements: 2.7-2.10_
@@ -226,31 +226,31 @@ Implementation follows a logical progression: project setup → data preprocessi
 - [ ] 13. Checkpoint - Ensure all ML models trained and evaluated
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. Implement backend model inference module
-  - [~] 14.1 Create backend/app/models/descriptor_model.py
+- [x] 14. Implement backend model inference module
+  - [x] 14.1 Create backend/app/models/descriptor_model.py
     - Implement DescriptorModel class loading LightGBM models and scaler
     - Implement predict() method returning 12 probabilities
     - _Requirements: 2.3_
   
-  - [~] 14.2 Create backend/app/models/gnn_model.py
+  - [x] 14.2 Create backend/app/models/gnn_model.py
     - Copy ToxGNN architecture from ml/models/gnn.py
     - Implement model loading from checkpoint
     - Implement predict() method with GPU support
     - _Requirements: 2.2_
   
-  - [~] 14.3 Create backend/app/models/transformer_model.py
+  - [x] 14.3 Create backend/app/models/transformer_model.py
     - Implement ChemBERTaModel class loading fine-tuned model and tokenizer
     - Implement predict() method with GPU support and proper tokenization
     - _Requirements: 2.1_
   
-  - [~] 14.4 Create backend/app/models/ensemble_model.py
+  - [x] 14.4 Create backend/app/models/ensemble_model.py
     - Copy EnsembleModel from ml/models/ensemble.py
     - Integrate all three models with weighted logit fusion
     - Load ensemble weights from artifacts
     - _Requirements: 2.4, 2.5_
 
 - [ ] 15. Implement SHAP explainability
-  - [~] 15.1 Create backend/app/explainability/shap_utils.py
+  - [ ] 15.1 Create backend/app/explainability/shap_utils.py
     - Implement ShapExplainer class with TreeExplainer
     - Load SHAP background dataset from artifacts
     - Implement explain() method computing SHAP values
@@ -263,14 +263,14 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.5_
 
 - [ ] 16. Implement Captum atom attribution
-  - [~] 16.1 Create backend/app/explainability/captum_utils.py
+  - [ ] 16.1 Create backend/app/explainability/captum_utils.py
     - Implement CaptumExplainer class with IntegratedGradients
     - Implement explain() method computing per-atom attributions
     - Normalize scores to [0, 1] range
     - Complete computation within 800ms target
     - _Requirements: 3.1, 3.2, 3.8_
   
-  - [~] 16.2 Create backend/app/explainability/heatmap_renderer.py
+  - [ ] 16.2 Create backend/app/explainability/heatmap_renderer.py
     - Implement HeatmapRenderer class
     - Implement render() method generating atom-colored PNG with RdYlBu_r colormap
     - Return base64-encoded image
@@ -283,7 +283,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.5_
 
 - [ ] 17. Implement structural alert detection
-  - [~] 17.1 Create backend/app/explainability/structural_alerts.py
+  - [ ] 17.1 Create backend/app/explainability/structural_alerts.py
     - Implement StructuralAlertScanner class
     - Load 150+ SMARTS toxicophore patterns
     - Include quinones, nitro aromatics, epoxides, Michael acceptors, aldehydes, anilines, etc.
@@ -298,7 +298,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.5_
 
 - [ ] 18. Implement ADMET property prediction
-  - [~] 18.1 Create backend/app/features/admet_predictor.py
+  - [ ] 18.1 Create backend/app/features/admet_predictor.py
     - Implement ADMETPredictor class
     - Compute QED, Lipinski violations, TPSA, logP, MW
     - Compute BBB penetration and oral bioavailability estimates
@@ -309,7 +309,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 5.1-5.10, 20.8_
 
 - [ ] 19. Implement UMAP chemical space search
-  - [~] 19.1 Create ml/scripts/precompute_umap.py
+  - [ ] 19.1 Create ml/scripts/precompute_umap.py
     - Compute Morgan fingerprints for all Tox21 molecules
     - Fit UMAP with n_components=2, n_neighbors=15, min_dist=0.1, metric='jaccard'
     - Save fitted reducer to ml/artifacts/umap_reducer.pkl
@@ -317,11 +317,11 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Complete fitting within 10 minutes
     - _Requirements: 30.1-30.9_
   
-  - [~] 19.2 Run UMAP precomputation
+  - [ ] 19.2 Run UMAP precomputation
     - Execute precompute_umap.py to generate embeddings
     - Verify output files created successfully
   
-  - [~] 19.3 Create backend/app/features/umap_search.py
+  - [ ] 19.3 Create backend/app/features/umap_search.py
     - Implement UMAPSearchEngine class
     - Load precomputed embeddings and fitted reducer
     - Implement project() method for new molecules (complete within 20ms)
@@ -331,7 +331,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 9.1-9.11, 30.7, 30.8, 30.10, 31.1-31.7_
 
 - [ ] 20. Implement bioisostere generation for de-risking
-  - [~] 20.1 Create backend/app/features/derisking.py
+  - [ ] 20.1 Create backend/app/features/derisking.py
     - Implement BioisostereGenerator class
     - Define substitution rules: NO2→CN, Cl→F, aldehyde→alcohol, quinone→phenol, etc.
     - Implement generate_variants() applying rules to detected alerts
@@ -344,7 +344,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - **Validates: Requirements 10.4, 10.5**
 
 - [ ] 21. Implement LLM report generation
-  - [~] 21.1 Create backend/app/report/llm_reporter.py
+  - [ ] 21.1 Create backend/app/report/llm_reporter.py
     - Implement LLMReporter class with Claude/Groq/Mistral API clients
     - Implement generate_report() formatting context and calling LLM
     - Structure report: Executive Summary, Pathway Analysis, Structural Drivers, De-Risking Recommendations, Regulatory Outlook, Confidence Assessment
@@ -354,7 +354,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 6.1-6.8_
 
 - [ ] 22. Implement PDF export
-  - [~] 22.1 Create backend/app/report/pdf_exporter.py
+  - [ ] 22.1 Create backend/app/report/pdf_exporter.py
     - Implement PDFExporter class using WeasyPrint
     - Implement export() method rendering HTML template
     - Include molecular structure, predictions table, SHAP chart, alerts, report text
@@ -364,14 +364,14 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 7.1-7.10_
 
 - [ ] 23. Implement FastAPI backend application
-  - [~] 23.1 Create backend/app/core/config.py
+  - [ ] 23.1 Create backend/app/core/config.py
     - Implement Settings class using pydantic-settings
     - Load configuration from environment variables
     - Support MODEL_ARTIFACTS_PATH, API keys, CORS_ORIGINS, LOG_LEVEL, MAX_BATCH_SIZE, DEVICE
     - Provide default values and validation
     - _Requirements: 18.1-18.12_
   
-  - [~] 23.2 Create backend/app/core/logging.py
+  - [ ] 23.2 Create backend/app/core/logging.py
     - Configure structured logging with JSON format
     - Include request IDs for tracing
     - Log requests, processing times, errors with stack traces
@@ -379,7 +379,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Do not log sensitive information (API keys, SMILES strings)
     - _Requirements: 19.1-19.12_
   
-  - [~] 23.3 Create backend/app/main.py
+  - [ ] 23.3 Create backend/app/main.py
     - Initialize FastAPI app with CORS middleware
     - Implement startup event handler for model preloading
     - Load all models, UMAP embeddings, SHAP background set
@@ -389,7 +389,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 15.1-15.12_
 
 - [ ] 24. Create Pydantic request/response schemas
-  - [~] 24.1 Create backend/app/schemas/prediction.py
+  - [ ] 24.1 Create backend/app/schemas/prediction.py
     - Define PredictionRequest with SMILES validation
     - Define PredictionResponse with all fields
     - Define BatchPredictionRequest and BatchPredictionResponse
@@ -404,7 +404,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - **Validates: Requirements 13.10**
 
 - [ ] 25. Implement /predict endpoint
-  - [~] 25.1 Create backend/app/api/predict.py
+  - [ ] 25.1 Create backend/app/api/predict.py
     - Implement POST /predict endpoint
     - Accept SMILES with optional flags (include_heatmap, include_shap, include_alerts, include_admet)
     - Run preprocessing pipeline
@@ -422,7 +422,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.6_
 
 - [ ] 26. Implement /predict_batch endpoint
-  - [~] 26.1 Create backend/app/api/batch.py
+  - [ ] 26.1 Create backend/app/api/batch.py
     - Implement POST /predict_batch endpoint
     - Accept CSV file upload with SMILES column
     - Parse and validate CSV
@@ -440,7 +440,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.7_
 
 - [ ] 27. Implement /generate_report endpoint
-  - [~] 27.1 Create backend/app/api/report.py
+  - [ ] 27.1 Create backend/app/api/report.py
     - Implement POST /generate_report endpoint
     - Accept SMILES and prediction data
     - Call LLMReporter to generate report text
@@ -455,7 +455,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 22.8_
 
 - [ ] 28. Implement /derisk endpoint
-  - [~] 28.1 Create backend/app/api/derisk.py
+  - [ ] 28.1 Create backend/app/api/derisk.py
     - Implement POST /derisk endpoint
     - Accept SMILES string
     - Scan for structural alerts
@@ -467,7 +467,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 13.5, 10.1-10.12_
 
 - [ ] 29. Implement /what_if endpoint
-  - [~] 29.1 Create backend/app/api/whatif.py
+  - [ ] 29.1 Create backend/app/api/whatif.py
     - Implement POST /what_if endpoint
     - Accept original and modified SMILES
     - Predict toxicity for both molecules
@@ -478,7 +478,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 13.4, 32.1-32.10, 20.9_
 
 - [ ] 30. Implement /similar endpoint
-  - [~] 30.1 Create backend/app/api/similar.py
+  - [ ] 30.1 Create backend/app/api/similar.py
     - Implement GET /similar endpoint
     - Accept SMILES query parameter
     - Project molecule into UMAP space
@@ -487,18 +487,18 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 13.6, 9.1-9.11, 31.1-31.8_
 
 - [ ] 31. Implement /health and /docs endpoints
-  - [~] 31.1 Create backend/app/api/health.py
+  - [ ] 31.1 Create backend/app/api/health.py
     - Implement GET /health endpoint
     - Return status, models_loaded flag, version, uptime
     - Only return "ready" after all models loaded
     - _Requirements: 13.7, 15.11, 15.12_
   
-  - [~] 31.2 Configure Swagger UI documentation
+  - [ ] 31.2 Configure Swagger UI documentation
     - Enable auto-generated docs at /docs endpoint
     - _Requirements: 13.8_
 
 - [ ] 32. Implement error handling and validation
-  - [~] 32.1 Create backend/app/core/errors.py
+  - [ ] 32.1 Create backend/app/core/errors.py
     - Implement custom exception classes
     - Implement global exception handlers
     - Return appropriate HTTP status codes (422, 500, 503)
@@ -506,7 +506,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Do not expose stack traces in production
     - _Requirements: 17.1-17.12, 13.14_
   
-  - [~] 32.2 Implement rate limiting
+  - [ ] 32.2 Implement rate limiting
     - Add slowapi rate limiter middleware
     - Limit to 100 requests/minute per IP
     - Return 429 status for rate limit exceeded
@@ -516,7 +516,7 @@ Implementation follows a logical progression: project setup → data preprocessi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 34. Set up React TypeScript frontend project
-  - [~] 34.1 Initialize Vite React TypeScript project
+  - [ ] 34.1 Initialize Vite React TypeScript project
     - Create frontend/ directory with Vite template
     - Install dependencies: react, react-router-dom, axios, recharts, plotly.js, tailwindcss
     - Configure Tailwind CSS
@@ -524,7 +524,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Create src/ structure with components/, pages/, api/, types/
     - _Requirements: 14.14, 14.15_
   
-  - [~] 34.2 Create API client module
+  - [ ] 34.2 Create API client module
     - Create frontend/src/api/client.ts
     - Implement predictToxicity() function
     - Implement predictBatch() function
@@ -536,41 +536,41 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 13.1-13.7_
 
 - [ ] 35. Implement frontend visualization components
-  - [~] 35.1 Create frontend/src/components/MoleculeViewer.tsx
+  - [ ] 35.1 Create frontend/src/components/MoleculeViewer.tsx
     - Display base molecular structure image
     - Overlay heatmap with opacity control
     - Position alert badges on structure
     - Provide zoom and pan controls
     - _Requirements: 14.6, 33.1, 33.8_
   
-  - [~] 35.2 Create frontend/src/components/ToxicityRadar.tsx
+  - [ ] 35.2 Create frontend/src/components/ToxicityRadar.tsx
     - Use Recharts RadarChart with 12 axes
     - Display assay probabilities
     - Color code by risk level (red/amber/green)
     - Show tooltips with exact values on hover
     - _Requirements: 14.7, 33.2, 33.9, 33.10_
 
-  - [~] 35.3 Create frontend/src/components/ShapChart.tsx
+  - [ ] 35.3 Create frontend/src/components/ShapChart.tsx
     - Use Recharts BarChart for top 10 features
     - Color bars by direction (red=toxic, blue=protective)
     - Display feature names and SHAP values
     - Show tooltips on hover
     - _Requirements: 14.8, 33.3, 33.9_
   
-  - [~] 35.4 Create frontend/src/components/AlertBadges.tsx
+  - [ ] 35.4 Create frontend/src/components/AlertBadges.tsx
     - Display structural alerts with severity color coding
     - Position badges near flagged atoms
     - Show alert name and description on hover
     - _Requirements: 14.9, 33.4_
   
-  - [~] 35.5 Create frontend/src/components/AdmetPanel.tsx
+  - [ ] 35.5 Create frontend/src/components/AdmetPanel.tsx
     - Display QED, Lipinski violations, TPSA, logP, MW
     - Display BBB penetration and oral bioavailability
     - Display CYP and hERG predictions
     - Use consistent color coding
     - _Requirements: 14.10, 33.5_
   
-  - [~] 35.6 Create frontend/src/components/UmapPlot.tsx
+  - [ ] 35.6 Create frontend/src/components/UmapPlot.tsx
     - Use Plotly scattergl for 12,000 points with WebGL acceleration
     - Color points by toxicity labels
     - Highlight query molecule with star marker
@@ -580,7 +580,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 14.11, 33.7, 9.6-9.11, 20.9, 20.10, 33.11, 33.12_
 
 - [ ] 36. Implement frontend pages
-  - [~] 36.1 Create frontend/src/pages/SingleAnalysis.tsx
+  - [ ] 36.1 Create frontend/src/pages/SingleAnalysis.tsx
     - Add SMILES text input with validation
     - Add preset example molecule buttons (aspirin, ibuprofen, caffeine, bisphenol A, doxorubicin)
     - Display MoleculeViewer, ToxicityRadar, ShapChart, AlertBadges, AdmetPanel
@@ -590,21 +590,21 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Display error messages in notification banner
     - _Requirements: 14.1, 14.11-14.13, 34.1-34.10_
   
-  - [~] 36.2 Create frontend/src/pages/ChemicalSpace.tsx
+  - [ ] 36.2 Create frontend/src/pages/ChemicalSpace.tsx
     - Add SMILES input for query molecule
     - Display UmapPlot with 12,000 Tox21 points
     - Highlight query molecule and nearest neighbors
     - Enable click to load molecule into SingleAnalysis
     - _Requirements: 14.2, 9.6-9.11_
   
-  - [~] 36.3 Create frontend/src/pages/BatchScreening.tsx
+  - [ ] 36.3 Create frontend/src/pages/BatchScreening.tsx
     - Add CSV file upload component
     - Display results table with sorting and filtering
     - Show SMILES, composite risk, risk level, flagged assays
     - Enable export of results
     - _Requirements: 14.3, 8.1-8.10_
   
-  - [~] 36.4 Create frontend/src/pages/DeRiskingLab.tsx
+  - [ ] 36.4 Create frontend/src/pages/DeRiskingLab.tsx
     - Add SMILES input
     - Display original molecule and risk score
     - Display generated variants in grid
@@ -612,7 +612,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Enable click to compare variants
     - _Requirements: 14.4, 10.1-10.12_
 
-  - [~] 36.5 Create frontend/src/pages/MultiCompare.tsx
+  - [ ] 36.5 Create frontend/src/pages/MultiCompare.tsx
     - Add multi-SMILES input (2-5 molecules)
     - Display heatmap grid with assays as rows, molecules as columns
     - Color cells by toxicity probability
@@ -621,20 +621,20 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 14.5, 11.1-11.9_
 
 - [ ] 37. Implement frontend styling and UX
-  - [~] 37.1 Apply Tailwind CSS styling
+  - [ ] 37.1 Apply Tailwind CSS styling
     - Use dark theme with blue accents
     - Apply consistent spacing and card layouts
     - Add color-coded risk indicators (red/amber/green)
     - Add smooth transitions and hover effects
     - _Requirements: 14.15_
   
-  - [~] 37.2 Implement loading states and error handling
+  - [ ] 37.2 Implement loading states and error handling
     - Display loading animations during API calls
     - Show error messages in notification banners
     - Clear errors on new requests
     - _Requirements: 14.12, 17.10, 17.11_
   
-  - [~] 37.3 Implement accessibility features
+  - [ ] 37.3 Implement accessibility features
     - Use semantic HTML elements
     - Add alt text for images
     - Ensure keyboard accessibility
@@ -648,7 +648,7 @@ Implementation follows a logical progression: project setup → data preprocessi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 39. Create Docker deployment configuration
-  - [~] 39.1 Create docker/backend.Dockerfile
+  - [ ] 39.1 Create docker/backend.Dockerfile
     - Use continuumio/miniconda3 base image
     - Install RDKit via conda
     - Install Python dependencies from requirements.txt
@@ -657,7 +657,7 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Set CMD to run uvicorn
     - _Requirements: 16.2, 16.8, 16.9_
   
-  - [~] 39.2 Create docker/frontend.Dockerfile
+  - [ ] 39.2 Create docker/frontend.Dockerfile
     - Use node:18 for build stage
     - Build React app with npm run build
     - Use nginx for serving static files
@@ -665,44 +665,44 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Expose port 3000
     - _Requirements: 16.3, 16.10_
   
-  - [~] 39.3 Create docker-compose.yml
+  - [ ] 39.3 Create docker-compose.yml
     - Define backend and frontend services
     - Configure ports (8000, 3000), environment variables, volumes
     - Add health checks
     - Configure restart policies
     - _Requirements: 16.1, 16.4-16.7, 16.11_
   
-  - [~] 39.4 Test Docker deployment
+  - [ ] 39.4 Test Docker deployment
     - Run docker-compose up
     - Verify platform accessible at http://localhost:3000 within 60 seconds
     - Test end-to-end prediction flow
     - _Requirements: 16.11_
 
 - [ ] 40. Create Hugging Face Spaces deployment configuration
-  - [~] 40.1 Create Spaces README.md with YAML frontmatter
+  - [ ] 40.1 Create Spaces README.md with YAML frontmatter
     - Configure T4 GPU, Python 3.11 runtime
     - Add project description, demo GIF, usage instructions
     - _Requirements: 25.1-25.3, 25.12_
   
-  - [~] 40.2 Create app.py entry point for Spaces
+  - [ ] 40.2 Create app.py entry point for Spaces
     - Adapt backend/app/main.py for Spaces deployment
     - Configure model artifact loading or download at startup
     - _Requirements: 25.5, 25.6_
   
-  - [~] 40.3 Create Spaces-compatible requirements.txt
+  - [ ] 40.3 Create Spaces-compatible requirements.txt
     - Ensure compatibility with Spaces environment
     - _Requirements: 25.4_
   
-  - [~] 40.4 Configure Spaces secrets
+  - [ ] 40.4 Configure Spaces secrets
     - Document ANTHROPIC_API_KEY configuration
     - _Requirements: 25.7_
   
-  - [~] 40.5 Write deployment documentation
+  - [ ] 40.5 Write deployment documentation
     - Provide step-by-step Spaces setup instructions
     - _Requirements: 25.10_
 
-- [ ] 41. Create comprehensive documentation
-  - [~] 41.1 Write README.md
+- [x] 41. Create comprehensive documentation
+  - [x] 41.1 Write README.md
     - Add project overview and features
     - Add installation instructions
     - Add usage examples with curl commands
@@ -713,18 +713,18 @@ Implementation follows a logical progression: project setup → data preprocessi
     - Add citations for research papers and methods
     - _Requirements: 23.1, 23.5, 23.8, 23.9, 23.10, 23.11, 23.12_
   
-  - [~] 41.2 Create model card
+  - [x] 41.2 Create model card
     - Document training data, performance metrics, limitations
     - _Requirements: 23.7_
   
-  - [~] 41.3 Create example files
+  - [x] 41.3 Create example files
     - Add example SMILES strings for common drugs
     - Add example CSV file for batch screening
     - Add Jupyter notebook with API usage examples
     - _Requirements: 23.3, 23.4, 23.8_
 
 - [ ] 42. Implement security measures
-  - [~] 42.1 Verify security requirements
+  - [ ] 42.1 Verify security requirements
     - Confirm no SMILES stored in logs or disk
     - Verify rate limiting functional
     - Verify CORS restrictions
@@ -734,17 +734,17 @@ Implementation follows a logical progression: project setup → data preprocessi
     - _Requirements: 24.1-24.12_
 
 - [ ] 43. Run end-to-end integration tests
-  - [~] 43.1 Test complete prediction flow
+  - [ ] 43.1 Test complete prediction flow
     - Test SMILES input → preprocessing → prediction → explainability → report
     - Verify all visualizations render correctly
     - _Requirements: 20.1-20.12_
   
-  - [~] 43.2 Test batch screening
+  - [ ] 43.2 Test batch screening
     - Test CSV upload with 100 molecules
     - Verify processing time <12 seconds on CPU
     - _Requirements: 20.3_
   
-  - [~] 43.3 Test de-risking workflow
+  - [ ] 43.3 Test de-risking workflow
     - Test variant generation and toxicity comparison
     - _Requirements: 10.1-10.12_
 
