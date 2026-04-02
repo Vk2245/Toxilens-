@@ -347,7 +347,7 @@ def main():
     
     # Load best model for final evaluation
     logger.info("\nLoading best model for final evaluation...")
-    checkpoint = torch.load(f"{artifacts_dir}/gnn_best.pt")
+    checkpoint = torch.load(f"{artifacts_dir}/gnn_best.pt", map_location=device, weights_only=False)
     model.load_state_dict(checkpoint['model_state_dict'])
     
     # Evaluate on test set
