@@ -61,12 +61,5 @@ track a problem_cropped.pdf
 # Pytest cache
 .pytest_cache/
 
-# Kiro specs (optional - keep if you want to show your planning)
-.kiro/
-
-implementation_plan.md 
-FinalPlan.txt 
-4.37.0
-.gitignore
 
 
