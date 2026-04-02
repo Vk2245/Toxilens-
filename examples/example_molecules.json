@@ -1,0 +1,115 @@
+{
+  "description": "Example SMILES strings for common drug molecules to test ToxiLens",
+  "molecules": [
+    {
+      "name": "Aspirin",
+      "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+      "description": "Common pain reliever and anti-inflammatory (NSAID)",
+      "expected_risk": "LOW-MEDIUM",
+      "interesting_features": [
+        "Ester group (labile)",
+        "Mild SR-p53 signal",
+        "Good reference compound for safe drugs"
+      ]
+    },
+    {
+      "name": "Ibuprofen",
+      "smiles": "CC(C)Cc1ccc(cc1)C(C)C(=O)O",
+      "description": "Non-steroidal anti-inflammatory drug (NSAID)",
+      "expected_risk": "LOW",
+      "interesting_features": [
+        "Generally safe profile",
+        "Minimal structural alerts",
+        "Good negative control"
+      ]
+    },
+    {
+      "name": "Caffeine",
+      "smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+      "description": "Central nervous system stimulant found in coffee and tea",
+      "expected_risk": "LOW",
+      "interesting_features": [
+        "Xanthine scaffold",
+        "Low toxicity at therapeutic doses",
+        "Multiple nitrogen heterocycles"
+      ]
+    },
+    {
+      "name": "Bisphenol A (BPA)",
+      "smiles": "CC(C)(c1ccc(O)cc1)c1ccc(O)cc1",
+      "description": "Industrial chemical and known endocrine disruptor",
+      "expected_risk": "MEDIUM-HIGH",
+      "interesting_features": [
+        "NR-ER and NR-AR endocrine disruption",
+        "Two phenol rings highlighted in heatmap",
+        "Classic example of environmental toxicant"
+      ]
+    },
+    {
+      "name": "Doxorubicin",
+      "smiles": "COc1cccc2c1C(=O)c1c(O)c3c(c(O)c1C2=O)CC(O)(C(=O)CO)CC3OC1CC(N)C(O)C(C)O1",
+      "description": "Anthracycline chemotherapy drug with known cardiotoxicity",
+      "expected_risk": "HIGH",
+      "interesting_features": [
+        "Quinone ring drives NR-AhR and SR-ARE signals",
+        "Classic cardiotoxic anthracycline",
+        "Multiple structural alerts"
+      ]
+    },
+    {
+      "name": "Tamoxifen",
+      "smiles": "CCC(=C(c1ccccc1)c1ccc(OCCN(C)C)cc1)c1ccccc1",
+      "description": "Selective estrogen receptor modulator (SERM) for breast cancer",
+      "expected_risk": "MEDIUM",
+      "interesting_features": [
+        "NR-ER activity (intended mechanism)",
+        "Metabolites are mutagenic",
+        "Parent compound safer than metabolites"
+      ]
+    },
+    {
+      "name": "Paracetamol (Acetaminophen)",
+      "smiles": "CC(=O)Nc1ccc(O)cc1",
+      "description": "Common analgesic and antipyretic drug",
+      "expected_risk": "LOW-MEDIUM",
+      "interesting_features": [
+        "Safe at therapeutic doses",
+        "Hepatotoxic at high doses (not captured in Tox21)",
+        "Aniline derivative"
+      ]
+    },
+    {
+      "name": "Warfarin",
+      "smiles": "CC(=O)CC(c1ccccc1)c1c(O)c2ccccc2oc1=O",
+      "description": "Anticoagulant drug (vitamin K antagonist)",
+      "expected_risk": "MEDIUM",
+      "interesting_features": [
+        "Coumarin scaffold",
+        "Multiple aromatic rings",
+        "Moderate SR-p53 signal"
+      ]
+    },
+    {
+      "name": "Nicotine",
+      "smiles": "CN1CCCC1c1cccnc1",
+      "description": "Alkaloid stimulant found in tobacco",
+      "expected_risk": "MEDIUM",
+      "interesting_features": [
+        "Pyridine ring",
+        "Moderate NR-AhR signal",
+        "Addictive but relatively low acute toxicity"
+      ]
+    },
+    {
+      "name": "Benzene",
+      "smiles": "c1ccccc1",
+      "description": "Simple aromatic hydrocarbon, known carcinogen",
+      "expected_risk": "HIGH",
+      "interesting_features": [
+        "Minimal structure but high toxicity",
+        "Metabolic activation to reactive species",
+        "Good test for model sensitivity"
+      ]
+    }
+  ]
+}

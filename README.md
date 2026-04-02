@@ -46,9 +46,6 @@
 
 > **"Drug development fails 90% of the time. 30% of those failures are due to unexpected toxicity — discovered only after years of work and hundreds of millions spent. ToxiLens predicts it before a single experiment is run, and explains exactly why, atom by atom."**
 
-<br>
-
-[🔬 Live Demo](https://toxilens.hf.space) &nbsp;·&nbsp; [📡 API Docs](https://toxilens.hf.space/docs) &nbsp;·&nbsp; [📄 Model Card](docs/model_card.md) &nbsp;·&nbsp; [🐛 Report Bug](issues) &nbsp;·&nbsp; [💡 Request Feature](issues)
 
 </div>
 
@@ -1344,6 +1341,261 @@ Load these presets directly in the ToxiLens UI to see interesting toxicity profi
 
 ---
 
+## 🛠️ &nbsp;Troubleshooting
+
+<details>
+<summary><b>Installation Issues</b></summary>
+
+**Problem: RDKit installation fails**
+```bash
+# Solution: Install via conda (required)
+conda install -c conda-forge rdkit
+```
+
+**Problem: PyTorch CUDA version mismatch**
+```bash
+# Check your CUDA version
+nvidia-smi
+
+# Install matching PyTorch (example for CUDA 11.8)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+```
+
+**Problem: PyTorch Geometric installation fails**
+```bash
+# Install with specific torch version
+pip install torch-geometric
+pip install pyg-lib torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-2.2.0+cu121.html
+```
+
+</details>
+
+<details>
+<summary><b>Runtime Errors</b></summary>
+
+**Problem: "Invalid SMILES: unable to parse molecular structure"**
+- Verify SMILES syntax using online validators (e.g., PubChem)
+- Remove salts and counterions manually
+- Try canonical SMILES from ChemDraw or RDKit
+
+**Problem: "Model artifacts not found"**
+```bash
+# Ensure models are trained first
+python ml/scripts/train_lgbm.py
+python ml/scripts/train_gnn.py
+python ml/scripts/train_chemberta.py
+python ml/scripts/optimize_ensemble.py
+
+# Or download pre-trained models (if available)
+# wget https://huggingface.co/toxilens/models/resolve/main/artifacts.zip
+# unzip artifacts.zip -d ml/
+```
+
+**Problem: "LLM API unavailable" or "API key not configured"**
+```bash
+# Set API key in .env file
+echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
+
+# Or use free alternatives
+echo "GROQ_API_KEY=..." >> .env  # Llama-3 70B
+```
+
+**Problem: Out of memory (OOM) during inference**
+- Reduce batch size in batch screening
+- Use CPU mode: `DEVICE=cpu` in .env
+- Close other GPU applications
+- Use mixed precision: model automatically uses fp16 on GPU
+
+</details>
+
+<details>
+<summary><b>Performance Issues</b></summary>
+
+**Problem: Slow predictions (>1 second per molecule)**
+- Ensure models are preloaded (check startup logs)
+- Use GPU if available: `DEVICE=cuda`
+- Check CPU usage — may need more cores
+- Disable SHAP/Captum for faster predictions: `include_shap=false`
+
+**Problem: Frontend not connecting to backend**
+```bash
+# Check backend is running
+curl http://localhost:8000/health
+
+# Check CORS settings in backend/.env
+CORS_ORIGINS=http://localhost:3000
+
+# Restart both services
+```
+
+**Problem: Docker containers fail to start**
+```bash
+# Check logs
+docker-compose logs backend
+docker-compose logs frontend
+
+# Rebuild containers
+docker-compose down
+docker-compose build --no-cache
+docker-compose up
+```
+
+</details>
+
+<details>
+<summary><b>Data Issues</b></summary>
+
+**Problem: Tox21 dataset download fails**
+```bash
+# Manual download from Kaggle
+# 1. Go to https://www.kaggle.com/datasets/epicskills/tox21-dataset
+# 2. Download tox21.csv
+# 3. Place in ml/data/raw/
+
+# Or use Kaggle API
+pip install kaggle
+kaggle datasets download epicskills/tox21-dataset -p ml/data/raw/
+unzip ml/data/raw/tox21-dataset.zip -d ml/data/raw/
+```
+
+**Problem: Preprocessing fails with "Invalid molecule"**
+- Check for corrupted SMILES in dataset
+- Run with error logging: `python ml/scripts/preprocess_tox21.py --verbose`
+- Skip invalid molecules: preprocessing script handles this automatically
+
+</details>
+
+<br>
+
+---
+
+## 🤝 &nbsp;Contributing
+
+We welcome contributions! Here's how to get started:
+
+### Development Setup
+
+```bash
+# Fork and clone the repository
+git clone https://github.com/your-username/toxilens.git
+cd toxilens
+
+# Create a feature branch
+git checkout -b feature/your-feature-name
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+npm install --prefix frontend
+
+# Run tests
+pytest tests/ -v
+npm test --prefix frontend
+```
+
+### Code Style
+
+**Python**
+- Follow PEP 8 style guide
+- Use type hints for function signatures
+- Maximum line length: 100 characters
+- Use Black for formatting: `black backend/`
+- Use isort for imports: `isort backend/`
+
+**TypeScript/React**
+- Follow Airbnb style guide
+- Use functional components with hooks
+- Use Prettier for formatting: `npm run format`
+- Use ESLint: `npm run lint`
+
+### Testing Requirements
+
+- Write unit tests for new functions
+- Maintain >70% code coverage
+- Run full test suite before submitting PR
+- Include integration tests for API endpoints
+
+### Pull Request Process
+
+1. Update documentation for new features
+2. Add tests covering your changes
+3. Ensure all tests pass: `pytest && npm test`
+4. Update CHANGELOG.md with your changes
+5. Submit PR with clear description of changes
+6. Link related issues in PR description
+
+### Areas for Contribution
+
+**High Priority**
+- [ ] ToxCast dataset integration (617 assays)
+- [ ] 3D conformer-aware GNN models
+- [ ] Metabolite prediction pipeline
+- [ ] Multi-species toxicity models
+
+**Medium Priority**
+- [ ] Additional structural alert patterns
+- [ ] ADMET model improvements
+- [ ] Frontend mobile responsiveness
+- [ ] API rate limiting implementation
+
+**Good First Issues**
+- [ ] Add more example molecules
+- [ ] Improve error messages
+- [ ] Documentation improvements
+- [ ] UI/UX enhancements
+
+### Reporting Bugs
+
+Use GitHub Issues with the following template:
+
+```markdown
+**Bug Description**
+Clear description of the bug
+
+**Steps to Reproduce**
+1. Step one
+2. Step two
+3. ...
+
+**Expected Behavior**
+What should happen
+
+**Actual Behavior**
+What actually happens
+
+**Environment**
+- OS: [e.g., Ubuntu 22.04]
+- Python version: [e.g., 3.11.5]
+- CUDA version: [e.g., 12.1]
+- Browser: [e.g., Chrome 120]
+
+**Logs**
+```
+Paste relevant logs here
+```
+```
+
+### Feature Requests
+
+Use GitHub Issues with the "enhancement" label:
+
+```markdown
+**Feature Description**
+Clear description of the proposed feature
+
+**Use Case**
+Why is this feature needed?
+
+**Proposed Solution**
+How should this work?
+
+**Alternatives Considered**
+Other approaches you've thought about
+```
+
+<br>
+
+---
+
 ## 👥 &nbsp;Team & Acknowledgements
 
 <div align="center">
@@ -1351,6 +1603,104 @@ Load these presets directly in the ToxiLens UI to see interesting toxicity profi
 **Built with 🔬 for CodeCure AI Hackathon — Track A · IIT BHU Spirit'26**
 
 </div>
+
+### License
+
+ToxiLens is released under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2026 ToxiLens Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+See [LICENSE](LICENSE) file for full text.
+
+### Citations
+
+If you use ToxiLens in your research, please cite:
+
+**ToxiLens Platform**
+```bibtex
+@software{toxilens2026,
+  title={ToxiLens: Interpretable Multi-Modal AI for Drug Toxicity Prediction},
+  author={ToxiLens Contributors},
+  year={2026},
+  url={https://github.com/your-handle/toxilens},
+  note={CodeCure AI Hackathon, IIT BHU Spirit'26}
+}
+```
+
+**Key Research Papers**
+
+```bibtex
+@article{gps_toxkg_2025,
+  title={GPS and ToxKG: Knowledge Graph-Enhanced Graph Neural Networks for Toxicity Prediction},
+  journal={PMC},
+  year={2025},
+  note={Achieved 0.956 AUC on NR-AR assay}
+}
+
+@article{moltitox_2025,
+  title={MoltiTox: Multi-Modal Fusion for Toxicity Prediction},
+  journal={Frontiers in Toxicology},
+  year={2025},
+  month={November},
+  note={4-modal ensemble achieving 0.831 mean AUROC}
+}
+
+@article{jlgcn_mtt_2025,
+  title={JLGCN-MTT: Joint Learning Graph Convolutional Network for Multi-Task Toxicity},
+  journal={Bioactive Materials},
+  year={2025},
+  note={Joint correlation loss for multi-task learning}
+}
+
+@article{cladd_2025,
+  title={CLADD: Collaborative LLM Agents for Drug Discovery},
+  journal={arXiv preprint arXiv:2502.17506},
+  year={2025},
+  month={February},
+  note={RAG-powered multi-agent system for drug design}
+}
+
+@article{chemberta2_2022,
+  title={ChemBERTa-2: Towards Chemical Foundation Models},
+  author={Chithrananda, Seyone and Grand, Gabriel and Ramsundar, Bharath},
+  journal={arXiv preprint arXiv:2209.01712},
+  year={2022},
+  note={Pretrained on 77M SMILES strings}
+}
+
+@article{brenk_alerts_2008,
+  title={Lessons Learnt from Assembling Screening Libraries for Drug Discovery for Neglected Diseases},
+  author={Brenk, Ruth and others},
+  journal={ChemMedChem},
+  volume={3},
+  number={3},
+  pages={435--444},
+  year={2008},
+  note={Structural alert patterns for toxicophores}
+}
+```
 
 **Datasets**
 - [Tox21](https://tripod.nih.gov/tox21/) — NIH / EPA / FDA (via Kaggle: `epicskills/tox21-dataset`)
